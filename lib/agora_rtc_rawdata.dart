@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 class AgoraRtcRawdata {
   static const MethodChannel _channel =
       const MethodChannel('agora_rtc_rawdata');
-  static StreamController<ByteBuffer> controller = StreamController<ByteBuffer>();
+  static StreamController<List<int>> controller = StreamController<List<int>>();
   static Future<void> registerAudioFrameObserver(int engineHandle) {
     return _channel.invokeMethod('registerAudioFrameObserver', engineHandle);
   }
@@ -22,12 +22,12 @@ class AgoraRtcRawdata {
   static Future<void> unregisterVideoFrameObserver() {
     return _channel.invokeMethod('unregisterVideoFrameObserver');
   }
-  static Stream<ByteBuffer> setAudioEvent() {
+  static Stream<List<int>> setAudioEvent() {
 
     _channel.setMethodCallHandler((call) {
         switch (call.method){
           case 'addEvent':
-            ByteBuffer event = (call.arguments as Uint8List).buffer;
+            List<int> event = (call.arguments as Uint8List).toList();
             controller.add(event);
             return Future.value('');
           default:
