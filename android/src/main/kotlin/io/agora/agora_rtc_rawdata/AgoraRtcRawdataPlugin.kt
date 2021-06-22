@@ -34,6 +34,7 @@ class AgoraRtcRawdataPlugin : FlutterPlugin, MethodCallHandler {
         if (audioObserver == null) {
           audioObserver = object : IAudioFrameObserver((call.arguments as Number).toLong()) {
             override fun onRecordAudioFrame(audioFrame: AudioFrame): Boolean {
+              channel.invokeMethod('addEvent',audioFrame.buffer)
               return true
             }
 

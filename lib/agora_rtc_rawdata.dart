@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
 class AgoraRtcRawdata {
   static const MethodChannel _channel =
       const MethodChannel('agora_rtc_rawdata');
-
+  static StreamController<ByteBuffer> controller = StreamController<ByteBuffer>();
   static Future<void> registerAudioFrameObserver(int engineHandle) {
     return _channel.invokeMethod('registerAudioFrameObserver', engineHandle);
   }
@@ -20,5 +21,21 @@ class AgoraRtcRawdata {
 
   static Future<void> unregisterVideoFrameObserver() {
     return _channel.invokeMethod('unregisterVideoFrameObserver');
+  }
+  static Stream<ByteBuffer> setAudioEvent() {
+
+    _channel.setMethodCallHandler((call) {
+        switch (call.method){
+          case 'addEvent':
+            ByteBuffer event = (call.arguments as Uint8List).buffer;
+            controller.add(event);
+            return Future.value('');
+          default:
+            print('Unknowm method ${call.method}');
+            throw MissingPluginException();
+            break;
+        }
+    });
+    return controller.stream;
   }
 }
