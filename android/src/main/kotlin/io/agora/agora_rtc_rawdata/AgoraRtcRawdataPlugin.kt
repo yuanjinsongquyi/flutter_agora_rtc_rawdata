@@ -34,19 +34,23 @@ class AgoraRtcRawdataPlugin : FlutterPlugin, MethodCallHandler {
         if (audioObserver == null) {
           audioObserver = object : IAudioFrameObserver((call.arguments as Number).toLong()) {
             override fun onRecordAudioFrame(audioFrame: AudioFrame): Boolean {
+              print("------------onRecordAudioFrame")
               channel.invokeMethod("addEvent",audioFrame.buffer)
               return true
             }
 
             override fun onPlaybackAudioFrame(audioFrame: AudioFrame): Boolean {
+              print("------------onPlaybackAudioFrame")
               return true
             }
 
             override fun onMixedAudioFrame(audioFrame: AudioFrame): Boolean {
+              print("------------onMixedAudioFrame")
               return true
             }
 
             override fun onPlaybackAudioFrameBeforeMixing(uid: Int, audioFrame: AudioFrame): Boolean {
+              print("------------onPlaybackAudioFrameBeforeMixing")
               return true
             }
           }
